@@ -17,5 +17,6 @@ func main() {
 	log.Println("Running on " + hostUrl)
 	router.POST("/upload", controllers.HandleFileUpload)
 	router.GET("/keys", controllers.GetFS)
+	router.POST("/keys", controllers.CreateKey)
 	router.Run(hostUrl)
 }
