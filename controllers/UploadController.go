@@ -10,6 +10,18 @@ import (
 )
 
 func HandleFileUpload(c *gin.Context) {
+	c.Request.ParseForm()
+
+	var keyName string = c.PostForm("key")
+	var fileUtils utils.FileUtils = utils.FileUtils{DirName: "data"}
+	log.Println(fileUtils.KeyExists(keyName))
+	if !fileUtils.KeyExists(keyName) {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"message": "Invalid Key",
+		})
+		return
+	}
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		log.Println(err)
@@ -18,7 +30,8 @@ func HandleFileUpload(c *gin.Context) {
 		})
 		return
 	}
-	if err := c.SaveUploadedFile(file, "data/"+file.Filename); err != nil {
+	if err := c.SaveUploadedFile(file, "data/"+keyName+"/"+file.Filename); err != nil {
+		log.SetPrefix("Upload Controller ")
 		log.Println(err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "Internal Server Error",
