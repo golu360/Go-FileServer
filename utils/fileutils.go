@@ -26,8 +26,7 @@ func (f *FileUtils) GetKeys() []string {
 }
 
 func (f *FileUtils) CreateKey(KeyName string) bool {
-	if _, err := os.Stat("data/" + KeyName); !os.IsNotExist(err) {
-		log.Println(err)
+	if f.KeyExists(KeyName) {
 		return false
 	}
 	err := os.Mkdir(f.DirName+"/"+KeyName, 0755)
@@ -36,4 +35,13 @@ func (f *FileUtils) CreateKey(KeyName string) bool {
 		return false
 	}
 	return true
+}
+
+func (f *FileUtils) KeyExists(KeyName string) bool {
+	if _, err := os.Stat(f.DirName + "/" + KeyName); os.IsNotExist(err) {
+		log.Println(err)
+		return false
+	} else {
+		return true
+	}
 }
